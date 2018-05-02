@@ -9,7 +9,7 @@ public class MessageReceiver {
     public void receiveMessage(String message){
         System.out.println("Received:"+message);
     }
-    private CountDownLatch latch = new CountDownLatch(1);
+    private CountDownLatch latch = new CountDownLatch(10000000);
     public CountDownLatch getLatch() {
         return latch;
     }
