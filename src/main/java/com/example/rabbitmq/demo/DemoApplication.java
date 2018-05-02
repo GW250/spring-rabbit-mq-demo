@@ -4,6 +4,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -20,7 +21,7 @@ public class DemoApplication {
 
 	@Bean
 	Queue queue() {
-		return new Queue(queueName, false);
+		return new Queue(queueName, true);
 	}
 
 	@Bean
@@ -31,6 +32,15 @@ public class DemoApplication {
 	@Bean
 	Binding binding(Queue queue, TopicExchange exchange) {
 		return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
+	}
+
+	@Bean
+	public ConnectionFactory connectionFactory() {
+		CachingConnectionFactory connectionFactory = new CachingConnectionFactory("127.0.0.1");
+		connectionFactory.setUsername("guest");
+		connectionFactory.setPassword("guest");
+		connectionFactory.setRequestedHeartBeat(10);
+		return connectionFactory;
 	}
 
 	@Bean
